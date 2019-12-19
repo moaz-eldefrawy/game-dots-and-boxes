@@ -35,3 +35,18 @@
 1576266831 d:\college\projects\programming\dots-and-boxes\main\input_parse.h
 	<stdlib.h>
 
+1576769060 source:c:\users\abdelrahman\desktop\old\dots-and-boxes\main\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<ctype.h>
+	<windows.h>
+	"structs.h"
+	"file_system.h"
+	<time.h>
+
+1576767346 c:\users\abdelrahman\desktop\old\dots-and-boxes\main\structs.h
+
+1576769338 c:\users\abdelrahman\desktop\old\dots-and-boxes\main\file_system.h
+	<string.h>
+
