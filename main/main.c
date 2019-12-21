@@ -83,6 +83,7 @@ void print_all_played_moves(Game *game){
 
 
 void print_grid_values(Game *game){
+
     int grid_length = game->grid_length;
     for(int i=0; i<grid_length; i++){
         for(int j=0; j<grid_length; j++){
@@ -196,6 +197,7 @@ bool validate_points(int row1, int row2, int col1, int col2, Game *game){
 
 void print_grid(Game *game){
     system("@cls||clear");
+    display_banner();
     int grid_length = game->grid_length;
     int scale;
     if(grid_length == 3)
@@ -323,6 +325,7 @@ bool enter_options (Game *game){
 
 
     system("@cls||clear");
+    display_banner();
     printf("Pick a menu number: \n \
            1. Players vs Player\n \
            2. Player vs Computer\n");
@@ -357,6 +360,7 @@ bool is_colored_square(Square *square){
 
 void display_top_10_players(){
     system("@cls||clear");
+    display_banner();
     Players_File *players_file,mem;
     players_file = &mem;
     get_top_10_players(players_file);
@@ -374,6 +378,7 @@ void display_top_10_players(){
 void after_game(Game *game){
 
     system("@cls||clear");
+    display_banner();
     int score_to_update;
     char name_to_update[1000];
     // print the winner's name
@@ -491,14 +496,37 @@ void undo(Game *game){
 
 }
 
-
-void display_game(Game *game){
-    print_grid(game);
-    printf("\n");
-
+void display_banner(){
 
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole, 4);
+    printf("                                    ,----,                                                                                                                                 \n");
+    printf("                 ,----..         ,/   .`|                                           ,--.                                    ,----..                                        \n");
+    printf("    ,---,       /   /   \\      ,`   .'  : .--.--.              ,---,              ,--.'|    ,---,                ,---,.    /   /   \\  ,--,     ,--,     ,---,.  .--.--.    \n");
+    printf("  .'  .' `\\    /   .     :   ;    ;     //  /    '.           '  .' \\         ,--,:  : |  .'  .' `\\            ,'  .'  \\  /   .     : |'. \\   / .`|   ,'  .' | /  /    '.  \n");
+    printf(",---.'     \\  .   /   ;.  \\.'_,/    ,'|  :  /`. /          /  ;    '.    ,`--.'`|  ' :,---.'     \\         ,---.' .' | .   /   ;.  \\; \\ `\\ /' / ; ,---.'   ||  :  /`. /  \n");
+    printf("|   |  .`\\  |.   ;   /  ` ;|    :     | ;  |  |--`          :  :       \\   |   :  :  | ||   |  .`\\  |         |   |  |: |.   ;   /  ` ;`. \\  /  / .' |   |   .';  |  |--`   \n");
+    printf(":   : |  '  |;   |  ; \\ ; |;    |.';  ; |  :  ;_            :  |   /\\   \\  :   |   \\ | ::   : |  '  |        :   :  :  /;   |  ; \\ ; | \\  \/  / ./  :   :  |-,|  :  ;_     \n");
+    printf("|   ' '  ;  :|   :  | ; | '`----'  |  |  \\  \\    `.         |  :  ' ;.   : |   : '  '; ||   ' '  ;  :        :   |    ; |   :  | ; | '  \\  \\.'  /   :   |  ;/| \\  \\    `.  \n");
+    printf("'   | ;  .  |.   |  ' ' ' :    '   :  ;   `----.   \\        |  |  ;/  \\   \\'   ' ;.    ;'   | ;  .  |        |   :     \\.   |  ' ' ' :   \\  ;  ;    |   :   .'  `----.   \\ \n");
+    printf("|   | :  |  ''   ;  \\; /  |    |   |  '   _ \\  \\  |        '  :  | \\  \\ ,'|   | | \\   ||   | :  |  '        |   |   . |'   ;  \\; /  |  / \\  \\  \\   |   |  |-,  _ \\  \\  | \n");
+    printf("'   : | /  ;  \\   \\  ',  /     '   :  |  /  /`--'  /        |  |  '  '--'  '   : |  ; .''   : | /  ;         '   :  '; | \\   \\  ',  /  ;  /\\  \\  \\  '   :  ;/| /  /`--'  / \n");
+    printf("|   | '` ,/    ;   :    /      ;   |.'  '--'.     /         |  :  :        |   | '`--'  |   | '` ,/          |   |  | ;   ;   :    / ./__;  \  ;  \\ |   |    \\'--'.     /  \n");
+    printf(";   :  .'       \\   \\ .'       '---'      `--'---'          |  | ,'        '   : |      ;   :  .'            |   :   /     \\   \\ .'  |   : / \\  \\  ;|   :   .'  `--'---'   \n");
+    printf("|   ,.'          `---`                                      `--''          ;   |.'      |   ,.'              |   | ,'       `---`    ;   |/   \\  ' ||   | ,'               \n");
+    printf("'---'                                                                      '---'        '---'                `----'                  `---'     `--` `----'                 \n");
+    printf("\n");
+    printf("\n");
+    SetConsoleTextAttribute(hConsole, white);
+
+}
+void display_game(Game *game){
+    HANDLE  hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    print_grid(game);
 
     SetConsoleTextAttribute(hConsole, blue);
     printf("player1 Points: %d\n",game->player1_points);
@@ -510,6 +538,9 @@ void display_game(Game *game){
     printf("player2 points: %d\n", game->player2_points);
     printf("player2 number of moves %d\n", game->player2_num_of_moves);
     SetConsoleTextAttribute(hConsole, white);
+    printf("\n");
+
+    printf("Remaining number of moves: %d\n",((game->grid_length-1)*(game->grid_length))*2 - game->number_of_moves);
     printf("\n");
 
     if(game->player_turn == 1){
@@ -749,7 +780,10 @@ void play_game(Game *game){
 
 void play_main_menu(Game *game){
 
+
     system("@cls||clear");
+
+    display_banner();
     printf("1.Start a New Game\n"
             "2.Load a Game\n"
             "3.Top 10 Players\n"
@@ -761,6 +795,7 @@ void play_main_menu(Game *game){
     char input[10000];
     fgets(input,10000,stdin);
     system("@cls||clear");
+    display_banner();
 
 
     if(strlen(input) != 2){ // input != 1 character
@@ -797,9 +832,6 @@ void play_main_menu(Game *game){
 int main()
 {
 
-    /*
-
-    */
     while(true){
         Game new_game;
         play_main_menu(&new_game);
