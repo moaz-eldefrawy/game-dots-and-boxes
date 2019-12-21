@@ -26,6 +26,8 @@ typedef struct {
     int player1_points;
     int player2_points;
     int number_of_moves;
+    int player1_num_of_moves;
+    int player2_num_of_moves;
     int player_turn;
     bool can_redo;
     int max_redo;

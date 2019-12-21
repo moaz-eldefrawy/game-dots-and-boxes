@@ -113,11 +113,13 @@ void fill_string(char str[], char value, int size){
 }
 
 
-void record_move(Move *move, int row1, int row2, int col1,int col2){
+void record_move(Game *game, Move *move, int row1, int row2, int col1,int col2){
     move->row1 = row1;
     move->row2 = row2;
     move->col1 = col1;
     move->col2 = col2;
+
+
 }
 
 bool is_move_previously_played(Game *game,int row1, int row2, int col1, int col2){
@@ -159,6 +161,8 @@ void initialize_game(Game *game){
     game->can_redo = 0;
     exit_game = false;
     game->max_redo =0;
+    game->player1_num_of_moves=0;
+    game->player2_num_of_moves=0;
 
 }
 
@@ -299,8 +303,7 @@ void print_grid(Game *game){
 bool enter_options (Game *game){
     printf("Pick a menu number:\n\
            1. Beginner (2 by 2 grid)\n\
-           2. Expert (5 by 5 grid) \n\
-           3. Choose a grid length\n");
+           2. Expert (5 by 5 grid) \n");
 
 
     // input & validation
@@ -477,8 +480,14 @@ void undo(Game *game){
         square1->left = 0;
         square2->right = 0;
     }
-    if(player_marked_a_box == false)
+    if(player_marked_a_box == false){
         game->player_turn = (3 - game->player_turn); // change player
+    }
+    if(game->player_turn == 1)
+            game->player1_num_of_moves--;
+
+    else if(game->player_turn == 2)
+        game->player2_num_of_moves--;
 
 }
 
@@ -486,8 +495,35 @@ void undo(Game *game){
 void display_game(Game *game){
     print_grid(game);
     printf("\n");
-    printf("player1 Points: %d - player2 points: %d\n\n", game->player1_points,
-       game->player2_points);
+
+
+    HANDLE  hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole, blue);
+    printf("player1 Points: %d\n",game->player1_points);
+    printf("player1 number of moves %d\n", game->player1_num_of_moves);
+
+    printf("\n");
+
+    SetConsoleTextAttribute(hConsole, green);
+    printf("player2 points: %d\n", game->player2_points);
+    printf("player2 number of moves %d\n", game->player2_num_of_moves);
+    SetConsoleTextAttribute(hConsole, white);
+    printf("\n");
+
+    if(game->player_turn == 1){
+        SetConsoleTextAttribute(hConsole, blue);
+        printf("Player1 turn to play .. \n");
+        SetConsoleTextAttribute(hConsole, white);
+    }
+    else {
+        SetConsoleTextAttribute(hConsole, green);
+        printf("player2 turn to play ..\n");
+        SetConsoleTextAttribute(hConsole, white);
+    }
+    printf("\n");
+
 
 
     printf("Type \'undo\' to undo a move\n");
@@ -523,7 +559,7 @@ bool three_sidded_box_exists(Game *game, int *row1, int *row2, int* col1, int *c
                     *row1 = i; *row2= i+1;
                     *col1 = j; *col2= j;
                 }
-                record_move( &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
+                record_move( game, &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
                 return 1;
             }
         }
@@ -546,7 +582,7 @@ void computer_to_play(Game *game, int *row1, int *row2, int *col1, int *col2){
             *row1 = j; *row2 = j+1;
             *col1 = i; *col2 = i;
             if(is_move_previously_played(game, *row1, *row2, *col1, *col2) == false){
-                record_move( &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
+                record_move(game, &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
                 return ;
             }
         }
@@ -557,7 +593,7 @@ void computer_to_play(Game *game, int *row1, int *row2, int *col1, int *col2){
             *row1 = i; *row2 = i;
             *col1 = j; *col2 = j+1;
             if(is_move_previously_played(game, *row1, *row2, *col1, *col2) == false){
-                record_move( &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
+                record_move(game, &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
                 return ;
             }
         }
@@ -607,8 +643,6 @@ void take_coordinates_input(Game *game, int *row1, int *row2, int *col1, int *co
 
         num_of_inputs = sscanf(input_str,"%d %d %d %d",row1,row2,col1,col2);
 
-        test3;
-        delay(2);
         /*printf("\n-----------------------------------------\n");
         printf("%s",input_str);
         printf("num = %d\n",num_of_inputs);
@@ -623,7 +657,7 @@ void take_coordinates_input(Game *game, int *row1, int *row2, int *col1, int *co
                 valid_input = false;
             }
             else
-                record_move( &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
+                record_move(game, &(game->moves[game->number_of_moves]), *row1,*row2,*col1,*col2);
         }
         if(!valid_input)
             printf("Enter a valid input please\n");
@@ -643,7 +677,8 @@ void play_game(Game *game){
         // print game after each play
 
         display_game(game);
-        printf("Time: %0.2f\n", seconds);
+        int intSeconds = seconds;
+        printf("Time: %d mintues %d seconds\n", (intSeconds) / 60, (intSeconds)%60 );
         if(game->PVP == 0 && game->player_turn == 2){
             delay(0.5);
             computer_to_play(game, &row1, &row2, &col1, &col2);
@@ -690,7 +725,14 @@ void play_game(Game *game){
 
         if(player_marked_a_box == false)
             game->player_turn = (3 - game->player_turn); // change player
+
+
         game->number_of_moves++;
+        if(game->player_turn == 1)
+            game->player1_num_of_moves++;
+
+        else if(game->player_turn == 2)
+            game->player2_num_of_moves++;
 
         clock_t end = clock();
         seconds = (float)(end - start) / 1000;
@@ -755,18 +797,9 @@ void play_main_menu(Game *game){
 int main()
 {
 
-  /*   HANDLE  hConsole;
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int color1= 9;
-    int color2= 10;
-    // you can loop k higher to see more color choices
-    for(int k = 1; k < 255; k++)
-    {
+    /*
 
-        SetConsoleTextAttribute(hConsole, k);
-        printf("%3d  %s\n", k, "I want to be nice today!");
-    }*/
-    //print_grid(&game);
+    */
     while(true){
         Game new_game;
         play_main_menu(&new_game);

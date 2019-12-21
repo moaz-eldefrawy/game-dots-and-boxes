@@ -14,8 +14,8 @@ void load_game (){
     save_file = fopen(file_name,"rb");
 
     Game game; //saves the read game here
-    fread(&game,sizeof(Game),1,save_file);
-    if(fread != 0){
+    int x = fread(&game,sizeof(Game),1,save_file);
+    if(x != 0){
         fclose(save_file);
         play_game(&game);
     }
